@@ -7,11 +7,11 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-const port = 8080;
+const port = 3080;
 
 // Set up view engine
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '/'));
 
 // Middleware to parse JSON and URL-encoded data
 app.use(express.json());
