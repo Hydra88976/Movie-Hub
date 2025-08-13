@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1 interactive-widget=resizes-content"/>
+    <title>Video Player Admin</title>
+    <style>
+        html, body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-image: url("https://i.pinimg.com/originals/21/4e/fc/214efc2ae5ac3e094a716951f280ab7e.jpg");
+	    background-size: cover;
+            background-repeat: no-repeat;
+            overflow: hidden;
+            height: 100dvh;
+            
+        }
+        video {
+            object-fit: cover;
+            width: 100%;
+            height: 13rem;
+           
+        }
+        /*input[type="text"] {
+            padding: 10px;
+            width: 70%;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }*/
+        .url
+        {
+          padding: 5px;
+          width: 70%;
+          position: relative;
+          margin: 5px;
+          
+        }
+        .submit {
+            /*padding: 10px 20px;*/
+            font-size: 16px;
+            cursor: pointer;
+            position: relative;
+            padding: 3px;
+        }
+        .play
+        {
+            font-size: 16px;
+            cursor: pointer;
+            position: relative;
+            top: -10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;         
+            cursor: pointer;
+            left: -45px;
+        }
+        .pause
+        {
+            font-size: 16px;
+            cursor: pointer;
+            position: relative;
+            top: -10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;         
+            cursor: pointer; 
+            left: -40px;         
+        }
+        .seek
+        {
+        position: relative;
+        top: -9px;
+        right: -40px;
+       
+        }
+        .control-buttons {
+            margin-top: 10px;
+        }
+        .message {
+           /*background-color: grey;*/
+           padding: 0px;
+           height: 2px;
+           overflow: hidden;
+           word-break: break-all;
+           margin-top: 1px;
+	   font-size: 10px;
+           color: green;
+        }
+
+        /* Chat icon */
+.chat-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+/* Chat box styles */
+    .chat-container {
+      flex-direction: column;
+      /*backdrop-filter: blur(10px);*/
+      border-top: 0.5px solid grey;
+      /*background-color: rgba(0, 0, 0, 0.2);*/
+      overflow: hidden;
+      position: relative;
+      top: -5px;
+      height: calc(100% - 18rem - 2.6rem);
+      
+    }
+
+    .chat-header {
+      padding: 5px;
+      color: white;
+      font-size: 10px;
+      background-color: rgba(0,0,0,0.5);
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .message-box {
+      text-align: left;
+      overflow-y: auto;
+      padding: 5px;
+      height: calc(100% - 1.8rem);
+      backdrop-filter: blur(10px);
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    .input-container {
+      display: flex;
+      /*padding: 10px;*/
+      /*background: #222;*/
+      padding-left: 5px;
+      padding-right: 5px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      position: fixed;
+      bottom: 0px;
+      left: 0;
+      width: 100%;
+      box-sizing: border-box;
+      z-index: 999;
+      height: 2.7rem;
+      overflow: hidden;
+      
+      backdrop-filter: blur(10px);
+      background-color: rgba(0, 0, 0, 0.2);
+      border-top: 0.1px solid grey;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      outline: none;
+      background-color: #111;
+      color: white;
+      position: relative;
+      bottom: 2px;
+    }
+
+    .send-btn {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 15px;
+      margin-left: 10px;
+      cursor: pointer;
+      position: relative;
+      bottom: 3px;
+    }
+
+    .message-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+      font-size: 13px;
+    }
+
+    .umsg {
+      margin: 0; /* Remove default margins from paragraph */
+    word-break: break-all;
+    /*background-color: red;*/
+    max-height: 100%;
+    flex-basis: 100%;
+    overflow: hidden;
+    white-space: normal;
+    text-indent: 0px;
+    color: white;
+      
+    }
+
+    .nm {
+      font-weight: bold;
+      /*margin-right: 5px;*/
+    }
+
+    @media (max-width: 600px) {
+      .input-container {
+        padding-bottom: env(safe-area-inset-bottom); /* for iOS notch support */
+      }
+    }
+
+
+    </style>
+</head>
+<body>
+
+  <!--  <h1>Video Player Admin</h1> -->
+
+    <!-- Form to input video URL -->
+    <form action="/submit" method="POST">
+        <input type="text" class="url" name="videoUrl" placeholder="Enter video URL" required>
+        <button type="submit" class="submit">OK</button>
+    </form>
+
+      <% if (videoUrl) { %>
+        <video id="videoPlayer" controls>
+            <!--<source src="<%= videoUrl %>" type="video/mp4">-->
+             <source src="<%= videoUrl %>" type="application/x-mpegURL">
+            Your browser does not support the video tag.
+        </video>
+    <% } else { %>
+        <p>No video selected.</p>
+    <% } %>
+
+    <!-- Control Buttons for Admin -->
+    <div class="control-buttons">
+        <button id="playBtn" class="play">Play</button>
+        <button id="pauseBtn" class="pause">Pause</button>
+        <!--<button id="seekBtn" class="seek">Seek to 10s</button>-->
+        <!-- Slider to control video seeking -->
+        <input type="range"class="seek" id="seekSlider" min="0" value="0" step="1" />
+
+    </div>
+
+   <!-- Chat icon -->
+    <!--<div id="chatIcon" class="chat-icon">💬</div>-->
+
+    <!-- Chat box popup -->
+    <div class="chat-container" id="chatBox">
+        <div class="chat-header" id="chatHeader">Chat</div>
+        <div class="message-box" id="messageBox"></div>
+    </div>
+    
+    <div class="input-container">
+            <input type="text" id="chatInput" style="font-size: 13px"; class="chat-input" placeholder="Type a message">
+            <button id="sendBtn" class="send-btn">💬</button>
+    </div>
+
+
+    <!-- Add socket.io client script -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+
+        let MyName = "Aman";
+
+
+        const socket = io();
+
+        // Play the video when the "play" command is received
+        socket.on('play', () => {
+            const videoPlayer = document.getElementById('videoPlayer');
+            if (videoPlayer) {
+                videoPlayer.play();
+            }
+        });
+
+        // Pause the video when the "pause" command is received
+        socket.on('pause', () => {
+            const videoPlayer = document.getElementById('videoPlayer');
+            if (videoPlayer) {
+                videoPlayer.pause();
+            }
+        });
+
+        // Seek the video when the "seek" command is received
+        socket.on('seek', (time) => {
+            const videoPlayer = document.getElementById('videoPlayer');
+            if (videoPlayer) {
+                //videoPlayer.currentTime = time;
+            }
+        });
+
+
+	// Get the video element and the slider
+        const videoPlayer = document.getElementById('videoPlayer');
+        const seekSlider = document.getElementById('seekSlider');
+
+	// Sync the slider with the video player's current time
+	videoPlayer.addEventListener('timeupdate', () => {
+        seekSlider.value = videoPlayer.currentTime;
+        seekSlider.max = videoPlayer.duration;  // Update the max value when the video duration changes
+        });
+
+	// Listen for the slider change and emit the 'seek' event with the new time
+	seekSlider.addEventListener('input', () => {
+        videoPlayer.currentTime = seekSlider.value;
+        socket.emit('seek', seekSlider.value); // Emit the time when the slider changes
+	});
+
+
+
+        // Admin control buttons
+        document.getElementById('playBtn').addEventListener('click', () => {
+            socket.emit('play');
+        });
+
+        document.getElementById('pauseBtn').addEventListener('click', () => {
+            socket.emit('pause');
+        });
+
+       /* document.getElementById('seekBtn').addEventListener('click', () => {
+            socket.emit('seek', 10); // Seek to 10 seconds (for example)
+        });*/
+
+        // Chat functionality
+        document.getElementById('sendBtn').addEventListener('click', () => {
+            const chatInput = document.getElementById('chatInput');
+            const message = chatInput.value.trim();
+
+            const messageBox = document.getElementById('messageBox');
+            const newMessage = document.createElement('div');
+            newMessage.setAttribute("class","message-container");
+
+            if (message) {
+                // Emit the message to the server
+                socket.emit('message', message, MyName);
+                newMessage.textContent = message;
+                /*messageBox.appendChild(newMessage);*/
+                messageBox.scrollTop = messageBox.scrollHeight; // Auto scroll to the bottom
+                // Clear the input field
+                chatInput.value = '';
+            }
+        });
+
+        // Listen for incoming chat messages
+        socket.on('rmessage', (message, name) => {
+            //alert(name);
+            const messageBox = document.getElementById('messageBox');
+            const newMessage = document.createElement('div');
+            newMessage.setAttribute("class","message-container");
+            //newMessage.textContent = message;
+            newMessage.innerHTML+=`<div class="message-container">
+                                        <!--<p class="uname">${name}:</p>-->
+                                        <p class="umsg"><strong class="nm" style="color: ${name === MyName ? 'green' : 'orange'}">${name}:</strong> ${message}</p>
+                                   </div>`;
+
+            messageBox.appendChild(newMessage);
+            messageBox.scrollTop = messageBox.scrollHeight; // Auto scroll to the bottom
+        });
+
+
+
+	// Open chat box when icon is clicked
+document.getElementById('chatIcon').addEventListener('click', function() {
+    document.getElementById('chatBox').style.display = 'block';
+});
+
+// Close chat box when close button is clicked
+document.getElementById('closeBtn').addEventListener('click', function() {
+    document.getElementById('chatBox').style.display = 'none';
+});
+
+// Make chat box draggable (works for both mouse and touch events)
+const chatBox = document.getElementById('chatBox');
+const chatHeader = document.getElementById('chatHeader');
+let isDragging = false;
+let offsetX, offsetY;
+
+const startDrag = (e) => {
+
+    isDragging = true;
+    if (e.type === "mousedown") {
+        offsetX = e.clientX - chatBox.getBoundingClientRect().left;
+        offsetY = e.clientY - chatBox.getBoundingClientRect().top;
+    } else if (e.type === "touchstart") {
+        offsetX = e.touches[0].clientX - chatBox.getBoundingClientRect().left;
+        offsetY = e.touches[0].clientY - chatBox.getBoundingClientRect().top;
+    }
+};
+
+const dragMove = (e) => {
+    if (isDragging) {
+        let x, y;
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const chatBoxWidth = chatBox.offsetWidth;
+        const chatBoxHeight = chatBox.offsetHeight;
+
+        // Calculate the new position
+        if (e.type === "mousemove") {
+            x = e.clientX - offsetX;
+            y = e.clientY - offsetY;
+        } else if (e.type === "touchmove") {
+            x = e.touches[0].clientX - offsetX;
+            y = e.touches[0].clientY - offsetY;
+        }
+
+        // Restrict the chat box within the bounds of the viewport
+        x = Math.max(0, Math.min(x, viewportWidth - chatBoxWidth)); // Horizontal bounds
+        y = Math.max(0, Math.min(y, viewportHeight - chatBoxHeight)); // Vertical bounds
+
+        // Set the new position of the chat box
+        chatBox.style.left = `${x}px`;
+        chatBox.style.top = `${y}px`;
+    }
+};
+
+const stopDrag = () => {
+
+    isDragging = false;
+};
+
+// Add event listeners for mouse and touch events
+chatHeader.addEventListener('mousedown', startDrag);
+chatHeader.addEventListener('touchstart', startDrag);
+
+document.addEventListener('mousemove', dragMove);
+document.addEventListener('touchmove', dragMove);
+
+document.addEventListener('mouseup', stopDrag);
+document.addEventListener('touchend', stopDrag);
+//document.addEventListener('touchmove', function(event) {
+  //  event.preventDefault();
+//}, { passive: true });
+
+
+
+
+//const chatBox = document.getElementById('chatBox');
+
+// Prevent swipe-to-reload when dragging the chatbox
+document.addEventListener('touchmove', function(event) {
+    if (isDragging || event.target.closest('#chatHeader')) {
+        event.preventDefault(); // Prevent swipe-to-reload when dragging
+    }
+}, { passive: false });
+
+
+
+
+
+
+// Disable swipe to reload (pull-to-refresh) on mobile devices
+//document.addEventListener('touchmove', function(event) {
+  //  event.preventDefault();
+//}, { passive: false });
+
+document.getElementById('chatBox').addEventListener('touchmove', function(event) {
+    event.preventDefault();
+}, { passive: true });
+
+document.getElementById('messageBox').addEventListener('touchmove', function(event) {
+    event.preventDefault();
+}, { passive: true });
+
+//document.addEventListener('touchstart', function(event) {
+  //  if (event.touches.length > 1) {
+        // Allow scrolling behavior
+    //    return;
+   // }
+   // event.preventDefault();
+//}, { passive: false });
+
+//document.addEventListener('touchmove', function(event) {
+    // Check if the touch is inside the chat box
+  //  if (!event.target.closest('#chatBox') && !event.target.closest('#messageBox')) {
+    //    event.preventDefault(); // Prevent swipe-to-reload but allow scroll inside chat
+   // }
+//}, { passive: false });
+
+
+
+
+const videoplayer = document.getElementById('videoPlayer');
+
+// Function to send current seek position to the server
+//const sendSeekPosition = () => {
+  //  if (videoplayer) {
+        // Emit the current time of the video to the server
+    //    socket.emit('seekPosition', videoPlayer.currentTime);
+   // }
+//};
+
+
+
+//let lastSeekPosition = -1;
+//const SEEK_THRESHOLD = 1;
+
+function sendSeekPosition() {
+    const currentTime = videoplayer.currentTime;
+      if (Math.abs(currentTime - lastSeekPosition) > SEEK_THRESHOLD) {
+       // socket.emit('seekPosition', currentTime);
+        lastSeekPosition = currentTime;
+    }
+    // Continue sending updates with the animation frame
+    requestAnimationFrame(sendSeekPosition);
+
+
+}
+
+// Start the loop
+//requestAnimationFrame(sendSeekPosition);
+
+
+
+//setInterval(sendSeekPosition, 100);
+
+
+
+
+let lastSeekPosition = 0;
+let seekTimeout = null;
+const SEEK_THRESHOLD = 1; // in seconds
+const SEEK_BUFFER_TIME = 2000; // in milliseconds, the buffer time between seeks
+//const vid = document.getElementById('videoPlayer');
+
+function handleSeek(currentTime) {
+    if (Math.abs(currentTime - lastSeekPosition) > SEEK_THRESHOLD) {
+        // Clear any previous seekTimeout, to avoid multiple seek events within short times
+        if (seekTimeout) {
+            clearTimeout(seekTimeout);
+        }
+
+        // Set a new timeout to emit the seek event after the buffer time
+        seekTimeout = setTimeout(() => {
+            socket.emit('seekPosition', currentTime);
+            lastSeekPosition = currentTime;
+            //requestAnimationFrame(handleSeek, vid.currentTime);
+        }, SEEK_BUFFER_TIME);
+    }
+}
+
+//requestAnimationFrame(handleSeek, vid.currentTime);
+
+const videoElement = document.getElementById('videoPlayer');
+videoElement.addEventListener('timeupdate', () => {
+    handleSeek(videoElement.currentTime);  // Call handleSeek with the current playback time
+      //socket.emit('seekPosition', videoElement.currentTime);
+});
+
+// In case the user manually drags the seekbar, trigger data send right away
+videoElement.addEventListener('seeked', () => {
+    socket.emit('seekPosition', videoElement.currentTime);
+      //handleSeek(videoElement.currentTime);
+    lastSeekPosition = videoElement.currentTime;
+});
+
+    </script>
+
+</body>
+</html>

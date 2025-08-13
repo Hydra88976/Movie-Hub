@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player Admin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            padding-top: 0px;
+            /*background-color: dark;*/
+            background-image: url("https://i.pinimg.com/originals/21/4e/fc/214efc2ae5ac3e094a716951f280ab7e.jpg");
+	    background-size: cover;
+	    background-repeat: no-repeat;
+        }
+        video {
+            max-width: 100%;
+            width: 100%;
+            height: 17rem;
+            position: relative;
+            top: -2rem;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 70%;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;                                                                                                                     cursor: pointer;
+        }                                                                                                                                    .control-buttons {
+            margin-top: 20px;
+        }
+
+        
+        /* Chat icon */
+.chat-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+/* Chat box styles */
+.chat-container {
+    display: none; /* Hidden by default */
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 300px;
+    height: 380px;
+    /*background-color: #fff;*/
+    backdrop-filter: blur(10px);
+    border: 0.1px solid grey;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    overflow: hidden;
+    /*background-color: green;*/
+    /*background-color: #ffffff7d;*/
+    /*background-blend-mode: overlay;*/
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.chat-header {
+    padding-left: 10px;
+    /*background-color: #007bff;*/
+    backdrop-filter: blur(10px);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    user-select: none;
+    border-radius: 8px 8px 0 0;
+    border-bottom: 0.25px solid grey;
+    -webkit-tap-highlight-color: none;
+    user-select: none;
+}
+
+.chat-header button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: none;
+    user-select: none;
+}
+.close-btn {
+
+    -webkit-tap-highlight-color: none;
+    user-select: none;
+}
+
+.message-box {
+    padding: 5px;
+    height: 275px;
+    overflow-y: auto;
+    text-align: left;
+    /*background-color: pink;*/
+}
+
+.input-container {
+    display: flex;
+    padding: 5px;
+    border-top: 0.1px solid grey;
+    /*background-color: red;*/
+
+}
+
+.chat-input {
+    width: 90%;
+    max-width: 90%;
+    padding: 10px;
+    /*border: 1px solid #ddd;*/
+    border-radius: 5px;
+    position: relative;
+    top: 5px;
+    border: none;
+    -webkit-tap-highlight-color: none;
+    outline: none;
+    background-color: #111111;
+    color: white;
+}
+
+.send-btn {
+    width: 3rem;
+    height: 2.1rem;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    margin-left: 5px;
+    padding: 3px;
+    cursor: pointer;
+    border: none;
+    position: relative;
+    top: 5px;
+    -webkit-tap-highlight-color: none;
+    outline: none;
+    user-select: none;
+}
+
+        .message {
+          /* background-color: grey;*/
+           padding: 5px;
+           word-break: break-all;
+           margin-top: 1px;
+           font-size: 10px;
+           color: green;
+        }
+
+/* Style for the container of each message */
+.message-container {
+    display: flex; /* Use flexbox to align the elements */
+    align-items: center; /* Vertically align the items in the middle */
+    margin-bottom: 2px; /* Add some space between messages */
+    /*background-color: yellow;*/
+    height: ;
+    margin-top: 1px;
+    font-size: 10px;
+    overflow: hidden;
+}
+
+/* Style for the username */
+.uname {
+    font-weight: bold; /* Make the username bold */
+    margin-right: 5px; /* Space between name and message */
+    /*background-color: pink;*/
+
+}
+
+/* Style for the message */
+.umsg {
+    margin: 0; /* Remove default margins from paragraph */
+    word-break: break-all;
+    /*background-color: red;*/
+    max-height: 100%;
+    flex-basis: 100%;
+    overflow: hidden;
+    white-space: normal;
+    text-indent: 0px;
+    color: white;
+}
+.nm {
+   filter: brightness(150%);
+}
+
+
+    </style>
+</head>
+<body>
+
+    <video id="videoPlayer" controls="none">
+        <source id="videoSource" type="application/x-mpegURL">
+        Your browser does not support the video tag.
+    </video>
+
+   <!-- <div class="chat-container">
+    <div class="message-box" id="messageBox"></div>
+    <div class="input-container">
+        <input type="text" id="chatInput" class="chat-input" placeholder="Type a message">
+        <button id="sendBtn" class="send-btn">💬</button>
+    </div>
+</div>-->
+
+
+    <!-- Chat icon -->
+    <div id="chatIcon" class="chat-icon">💬</div>
+
+    <!-- Chat box popup -->
+    <div class="chat-container" id="chatBox">
+        <div class="chat-header" id="chatHeader">
+            <span>Chat</span>
+            <button id="closeBtn" class="close-btn">✖</button>
+        </div>
+        <div class="message-box" id="messageBox"></div>
+        <div class="input-container">
+            <input type="text" id="chatInput" style="font-size: 13px"; class="chat-input" placeholder="Type your message"/>
+            <button id="sendBtn" class="send-btn">💬</button>
+        </div>
+    </div>
+
+
+    <!-- Add socket.io client script -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+
+        let MyName = prompt("Enter Your Name for Chat");
+
+
+        const socket = io();
+
+        // Listen for the 'videoUrl' event to update the video source
+        socket.on('videoUrl', (videoUrl) => {
+            //alert(videoUrl);
+            const videoPlayer = document.getElementById('videoPlayer');
+            const videoSource = document.getElementById('videoSource');
+
+            // Update the video source and load the video
+            videoSource.src = videoUrl;
+            videoPlayer.load();
+        });
+	
+
+        // Play the video when the "play" command is received
+        socket.on('play', () => {
+            //alert("play command");
+            const videoPlayer = document.getElementById('videoPlayer');
+            if (videoPlayer) {
+                videoPlayer.play();
+            }
+        });
+
+        // Pause the video when the "pause" command is received
+        socket.on('pause', () => {
+            const videoPlayer = document.getElementById('videoPlayer');
+            if (videoPlayer) {
+                videoPlayer.pause();
+            }
+        });
+
+        // Seek the video when the "seek" command is received
+        socket.on('seek', (time) => {
+            const videoPlayer = document.getElementById('videoPlayer');
+            if (videoPlayer) {
+                videoPlayer.currentTime = time;
+            }
+        });
+
+
+        // Chat functionality
+        document.getElementById('sendBtn').addEventListener('click', () => {
+            const chatInput = document.getElementById('chatInput');
+            const message = chatInput.value.trim();
+
+            const messageBox = document.getElementById('messageBox');
+            const newMessage = document.createElement('div');
+            newMessage.setAttribute("class","message-container");
+
+            if (message) {
+                // Emit the message to the server
+                socket.emit('message', message, MyName);
+                newMessage.textContent = message;
+                /*messageBox.appendChild(newMessage);*/
+                messageBox.scrollTop = messageBox.scrollHeight; // Auto scroll to the bottom
+                // Clear the input field
+                chatInput.value = '';
+            }
+        });
+
+        // Listen for incoming chat messages
+        socket.on('rmessage', (message, name) => {
+            //alert(name);
+            const messageBox = document.getElementById('messageBox');
+            const newMessage = document.createElement('div');
+            newMessage.setAttribute("class","message-container");
+            newMessage.innerHTML+=`<div class="message-container">
+                                        <!--<p class="uname">${name}:</p>-->
+                                        <p class="umsg"><strong class="nm" style="color: ${name === MyName ? 'green' : 'orange'}">${name}:</strong> ${message}</p>
+                                   </div>`;
+            messageBox.appendChild(newMessage);
+            messageBox.scrollTop = messageBox.scrollHeight; // Auto scroll to the bottom
+        });
+        
+        // Open chat box when icon is clicked
+document.getElementById('chatIcon').addEventListener('click', function() {
+    document.getElementById('chatBox').style.display = 'block';
+});
+
+// Close chat box when close button is clicked
+document.getElementById('closeBtn').addEventListener('click', function() {
+    document.getElementById('chatBox').style.display = 'none';
+});
+
+// Make chat box draggable (works for both mouse and touch events)
+const chatBox = document.getElementById('chatBox');
+const chatHeader = document.getElementById('chatHeader');
+let isDragging = false;
+let offsetX, offsetY;
+
+const startDrag = (e) => {
+    isDragging = true;
+    if (e.type === "mousedown") {
+        offsetX = e.clientX - chatBox.getBoundingClientRect().left;
+        offsetY = e.clientY - chatBox.getBoundingClientRect().top;
+    } else if (e.type === "touchstart") {
+        offsetX = e.touches[0].clientX - chatBox.getBoundingClientRect().left;
+        offsetY = e.touches[0].clientY - chatBox.getBoundingClientRect().top;
+    }
+};
+
+const dragMove = (e) => {
+    if (isDragging) {
+        let x, y;
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const chatBoxWidth = chatBox.offsetWidth;
+        const chatBoxHeight = chatBox.offsetHeight;
+
+        // Calculate the new position
+        if (e.type === "mousemove") {
+            x = e.clientX - offsetX;
+            y = e.clientY - offsetY;
+        } else if (e.type === "touchmove") {
+            x = e.touches[0].clientX - offsetX;
+            y = e.touches[0].clientY - offsetY;
+        }
+
+        // Restrict the chat box within the bounds of the viewport
+        x = Math.max(0, Math.min(x, viewportWidth - chatBoxWidth)); // Horizontal bounds
+        y = Math.max(0, Math.min(y, viewportHeight - chatBoxHeight)); // Vertical bounds
+
+        // Set the new position of the chat box
+        chatBox.style.left = `${x}px`;
+        chatBox.style.top = `${y}px`;
+    }
+};
+
+const stopDrag = () => {
+    isDragging = false;
+};
+
+// Add event listeners for mouse and touch events                                                                                    chatHeader.addEventListener('mousedown', startDrag);
+chatHeader.addEventListener('touchstart', startDrag);
+
+document.addEventListener('mousemove', dragMove);
+document.addEventListener('touchmove', dragMove);
+
+document.addEventListener('mouseup', stopDrag);
+document.addEventListener('touchend', stopDrag);
+
+
+// Disable swipe to reload (pull-to-refresh) on mobile devices
+//document.addEventListener('touchmove', function(event) {
+  //  event.preventDefault();
+//}, { passive: false });
+
+
+// Prevent swipe-to-reload when dragging the chatbox
+document.addEventListener('touchmove', function(event) {
+    if (isDragging || event.target.closest('#chatHeader')) {
+        event.preventDefault(); // Prevent swipe-to-reload when dragging
+    }
+}, { passive: false });
+
+
+
+    </script>
+
+</body>
+</html>
