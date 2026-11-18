@@ -51,7 +51,8 @@ io.on('connection', (socket) => {
 
     socket.on('message', (message, name) => {
         io.emit('rmessage',message,  name);
-        console.log(message, name);
+        //console.log(message, name);
+        console.log(`[${name}]: ${message}`);
     });
 
     socket.on('pause', () => {
